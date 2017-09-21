@@ -57,11 +57,19 @@ namespace CS3358_FA2017
        data = new value_type[capacity];
    }
 
-   sequence::sequence(const sequence& source)
+   sequence::sequence(const sequence& source) :
+           used(source.used), current_index(source.current_index),
+           capacity(source.capacity)
    {
-      cout << "sequence(const sequence& source) not implemented yet" << endl;
-   }
+       // Create new dynamic array for this data pointer.
+       data = new value_type[capacity];
 
+       // Copy data from source to this data.
+       for (int index = 0; index < used; ++index) {
+           data[index] = source.data[index];
+       }
+
+   }
    sequence::~sequence()
    {
       cout << "~sequence() not implemented yet" << endl;
