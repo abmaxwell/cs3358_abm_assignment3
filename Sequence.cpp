@@ -72,7 +72,9 @@ namespace CS3358_FA2017
    }
    sequence::~sequence()
    {
-      cout << "~sequence() not implemented yet" << endl;
+       // Free up dynamic memory and point to 0.
+       delete [] data;
+       data = NULL;
    }
 
    // MODIFICATION MEMBER FUNCTIONS
