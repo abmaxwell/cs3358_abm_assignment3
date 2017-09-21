@@ -46,9 +46,15 @@ using namespace std;
 namespace CS3358_FA2017
 {
    // CONSTRUCTORS and DESTRUCTOR
-   sequence::sequence(size_type initial_capacity)
+   sequence::sequence(size_type initial_capacity) : used(0), current_index(0)
+           , capacity(initial_capacity)
    {
-      cout << "sequence(size_type initial_capacity) not implemented yet" << endl;
+       // Check initial_capacity validity per pre-condition
+       // requirements for function stub listed in Sequence.h
+       if(initial_capacity <= 0){capacity = 1;}
+
+       // Create new dynamic sequence array.
+       data = new value_type[capacity];
    }
 
    sequence::sequence(const sequence& source)
