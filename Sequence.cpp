@@ -80,7 +80,25 @@ namespace CS3358_FA2017
    // MODIFICATION MEMBER FUNCTIONS
    void sequence::resize(size_type new_capacity)
    {
-      cout << "resize(size_type new_capacity) not implemented yet" << endl;
+       // Check validity of new_capacity to ensure it's inline
+       // with class invariant.
+       if(new_capacity < 1) {capacity = 1;}
+       else if(new_capacity < used) {capacity = used;}
+       else {capacity = new_capacity;}
+
+       // Create new dynamic array based on adjusted capacity.
+       value_type *temp_data = new value_type[capacity];
+
+       // Copy contents of dynamic array to new location.
+       for (int index = 0; index < used; ++index) {
+           temp_data[index] = data[index];
+       }
+
+       // Deallocate the space used by previous data array.
+       delete [] data;
+
+       // Move new dynamic array back to private member data.
+       data = temp_data;
    }
 
    void sequence::start()
