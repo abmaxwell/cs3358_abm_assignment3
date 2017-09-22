@@ -177,8 +177,11 @@ namespace CS3358_FA2017
 
    sequence::value_type sequence::current() const
    {
-      cout << "current() not implemented yet" << endl;
-      return value_type(); // dummy value returned
+       // Protect pre-condition. If false then terminate the program,
+       // otherwise return the current item of the sequence.
+       assert(is_item());
+
+       return data[current_index];
    }
 }
 
