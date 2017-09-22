@@ -103,7 +103,11 @@ namespace CS3358_FA2017
 
    void sequence::start()
    {
-      cout << "start() not implemented yet" << endl;
+       // Set current_index according to the invariant #4. If the sequence
+       // is empty then current_index == used == 0. If the sequence is > 0
+       // then used > 0 meaning that current_index == used. Either way used
+       // reflects the current index.
+       current_index = used;
    }
 
    void sequence::advance()
