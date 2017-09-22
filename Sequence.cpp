@@ -131,6 +131,7 @@ namespace CS3358_FA2017
        data = temp_data;
        capacity = source.capacity;
        used = source.used;
+       current_index = source.current_index;
 
        return *this;
    }
@@ -138,8 +139,10 @@ namespace CS3358_FA2017
    // CONSTANT MEMBER FUNCTIONS
    sequence::size_type sequence::size() const
    {
-      cout << "size() not implemented yet" << endl;
-      return 0; // dummy value returned
+       // Size equates to the number of items in a sequence
+       // this number is tracked by the private member
+       // variable used.
+       return used;
    }
 
    bool sequence::is_item() const
