@@ -161,16 +161,18 @@ namespace CS3358_FA2017
    // CONSTANT MEMBER FUNCTIONS
    sequence::size_type sequence::size() const
    {
-       // Size equates to the number of items in a sequence
-       // this number is tracked by the private member
-       // variable used.
+       // Size equates to the number of items in a sequence this number
+       // is tracked by the private member variable used.
        return used;
    }
 
    bool sequence::is_item() const
    {
-      cout << "is_item() not implemented yet" << endl;
-      return false; // dummy value returned
+       // An item is invalid ONLY if a sequence is NOT empty used == 0
+       // OR if the current index is NOT at the very last item in the
+       // sequence or current_index == used.
+
+       return (current_index < used);
    }
 
    sequence::value_type sequence::current() const
