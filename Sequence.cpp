@@ -110,8 +110,29 @@ namespace CS3358_FA2017
 
    sequence& sequence::operator=(const sequence& source)
    {
-      cout << "operator=(const sequence& source) not implemented yet" << endl;
-      return *this;
+       // Self-assignment fail safe. Check for self-assignment.
+       // If self-assignment is present then return invoking object.
+       if (this == &source)
+           return *this;
+
+       // Create temporary dynamic array to safely assign contents
+       // of array.
+       value_type *temp_data = new value_type[source.capacity];
+
+       // Moved contents of rhs array to temp
+       for (int index = 0; index < source.used; ++index) {
+           temp_data[index] = source.data[index];
+       }
+
+       // Deallocate old dynamic array.
+       delete [] data;
+
+       // Start assigning member variables from rhs.
+       data = temp_data;
+       capacity = source.capacity;
+       used = source.used;
+
+       return *this;
    }
 
    // CONSTANT MEMBER FUNCTIONS
