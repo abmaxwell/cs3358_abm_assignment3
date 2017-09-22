@@ -112,7 +112,14 @@ namespace CS3358_FA2017
 
    void sequence::advance()
    {
-      cout << "advance() not implemented yet" << endl;
+       // Protect pre-condition. If false then terminate the program,
+       // otherwise continue execution of sequence::advance().
+       assert(is_item());
+
+       // If current item is not the last item in the sequence then
+       // current_index become current_index+1, otherwise we are at
+       // the last item in the sequence so do nothing.
+       if(current_index != used - 1){++current_index;}
    }
 
    void sequence::insert(const value_type& entry)
