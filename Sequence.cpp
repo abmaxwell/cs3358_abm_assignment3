@@ -138,8 +138,9 @@ namespace CS3358_FA2017
        // otherwise continue execution of sequence::remove_current().
        assert(is_item());
 
-       // Shift items in the sequence left by one.
-       for (size_type index = 0; index < current_index; ++index) {
+       // If assert is true then there's an item to remove. Remove
+       // current item and shift items in the sequence left by one.
+       for (size_type index = current_index; index < used-1; ++index) {
                 data[index] = data[index+1];
        }
        // Update used after removing item.
