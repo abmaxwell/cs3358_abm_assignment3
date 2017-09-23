@@ -105,7 +105,8 @@ namespace CS3358_FA2017
    {
        // Set current_index according to the invariant #4. If the sequence
        // is empty then current_index == used == 0.
-       current_index = 0;
+
+       if(used > 0){current_index = 0;}
    }
 
    void sequence::advance()
@@ -117,8 +118,7 @@ namespace CS3358_FA2017
        // If current item is not the last item in the sequence then
        // current_index become current_index+1, otherwise we are at
        // the last item in the sequence so do nothing.
-       if (current_index == used - 1){current_index = used;}
-       else{++current_index;}
+       current_index++;
    }
 
    void sequence::insert(const value_type& entry)
@@ -128,36 +128,29 @@ namespace CS3358_FA2017
        // satisfy the resize rule.
        if(used == capacity){resize(size_type (1.25 * capacity)+1);}
 
-       // If there's no items then used == 0 and current_index == 0. Insert
-       // entry into the first slot of the sequence at current_index.
-       // Otherwise insert entry into slot prior to current_index.
-       if(!is_item()){
+       if(is_item()) {
+
+           // There is a valid current_index, so starting from used work
+           // back towards current_index shifting items towards used by 1
+           // to accommodate inserting entry before current_index.
+           // (Middle Sequence Insert)
+
+           for (size_type index = used; index > current_index; --index)
+               data[index] = data[index-1];
+           used++;
            data[current_index] = entry;
-           ++used;
-           ++current_index;
-       } else{
-           // Create a new dynamic array to hold the old data plus the
-           // entry.
-           value_type *temp_data = new value_type[capacity];
-
-           // Copy items prior to current_index into new array.
-           for(size_type index = 0; index < current_index; ++index){
-               temp_data[index] = data[index];
-           }
-
-           // Insert entry prior to current_index.
-           temp_data[current_index] = entry;
-
-           // Copy items after current_index.
-           for(size_type index = current_index+1; index < used; ++index){
-               temp_data[index] = data[index];
-           }
-
-           delete [] data;
-
-           data = temp_data;
-
-           ++used;
+       }
+       else
+       {
+           // There is NOT a valid current_index, so starting from used
+           // work backwards towards beginning of sequence (current_index == 0)
+           // shifting items towards used by 1 to accommodate inserting entry
+           // at beginning of sequence. (Front Sequence Insert)
+           for (size_type index = used; index > 0; --index)
+               data[index] = data[index-1];
+           used++;
+           current_index = 0;
+           data[current_index] = entry;
        }
    }
 
