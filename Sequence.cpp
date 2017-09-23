@@ -90,7 +90,7 @@ namespace CS3358_FA2017
        value_type *temp_data = new value_type[capacity];
 
        // Copy contents of dynamic array to new location.
-       for (int index = 0; index < used; ++index) {
+       for (size_type index = 0; index < used; ++index) {
            temp_data[index] = data[index];
        }
 
@@ -134,7 +134,16 @@ namespace CS3358_FA2017
 
    void sequence::remove_current()
    {
-      cout << "remove_current() not implemented yet" << endl;
+       // Protect pre-condition. If false then terminate the program,
+       // otherwise continue execution of sequence::remove_current().
+       assert(is_item());
+
+       // Shift items in the sequence left by one.
+       for (size_type index = 0; index < current_index; ++index) {
+                data[index] = data[index+1];
+       }
+       // Update used after removing item.
+       --used;
    }
 
    sequence& sequence::operator=(const sequence& source)
@@ -149,7 +158,7 @@ namespace CS3358_FA2017
        value_type *temp_data = new value_type[source.capacity];
 
        // Moved contents of rhs array to temp
-       for (int index = 0; index < source.used; ++index) {
+       for (size_type index = 0; index < source.used; ++index) {
            temp_data[index] = source.data[index];
        }
 
