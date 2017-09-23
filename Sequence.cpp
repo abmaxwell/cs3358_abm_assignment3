@@ -104,10 +104,8 @@ namespace CS3358_FA2017
    void sequence::start()
    {
        // Set current_index according to the invariant #4. If the sequence
-       // is empty then current_index == used == 0. If the sequence is > 0
-       // then used > 0 meaning that current_index == used. Either way used
-       // reflects the current index.
-       current_index = used;
+       // is empty then current_index == used == 0.
+       current_index = 0;
    }
 
    void sequence::advance()
@@ -119,12 +117,48 @@ namespace CS3358_FA2017
        // If current item is not the last item in the sequence then
        // current_index become current_index+1, otherwise we are at
        // the last item in the sequence so do nothing.
-       if(current_index != used - 1){++current_index;}
+       if (current_index == used - 1){current_index = used;}
+       else{++current_index;}
    }
 
    void sequence::insert(const value_type& entry)
    {
-      cout << "insert(const value_type& entry) not implemented yet" << endl;
+       // Check to see if we need to resize the dynamic array. If
+       // we do the multiple current capacity by 1.25 and add +1 to
+       // satisfy the resize rule.
+       if(used == capacity){resize(size_type (1.25 * capacity)+1);}
+
+       // If there's no items then used == 0 and current_index == 0. Insert
+       // entry into the first slot of the sequence at current_index.
+       // Otherwise insert entry into slot prior to current_index.
+       if(!is_item()){
+           data[current_index] = entry;
+           ++used;
+           ++current_index;
+       } else{
+           // Create a new dynamic array to hold the old data plus the
+           // entry.
+           value_type *temp_data = new value_type[capacity];
+
+           // Copy items prior to current_index into new array.
+           for(size_type index = 0; index < current_index; ++index){
+               temp_data[index] = data[index];
+           }
+
+           // Insert entry prior to current_index.
+           temp_data[current_index] = entry;
+
+           // Copy items after current_index.
+           for(size_type index = current_index+1; index < used; ++index){
+               temp_data[index] = data[index];
+           }
+
+           delete [] data;
+
+           data = temp_data;
+
+           ++used;
+       }
    }
 
    void sequence::attach(const value_type& entry)
