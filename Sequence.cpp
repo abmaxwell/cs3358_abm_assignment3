@@ -40,7 +40,7 @@
 
 #include <cassert>
 #include "Sequence.h"
-#include <iostream>
+
 using namespace std;
 
 namespace CS3358_FA2017
@@ -65,7 +65,7 @@ namespace CS3358_FA2017
        data = new value_type[capacity];
 
        // Copy data from source to this data.
-       for (int index = 0; index < used; ++index) {
+       for (size_type index = 0; index < used; ++index) {
            data[index] = source.data[index];
        }
 
@@ -104,9 +104,12 @@ namespace CS3358_FA2017
    void sequence::start()
    {
        // Set current_index according to the invariant #4. If the sequence
-       // is empty then current_index == used == 0.
+       // has items then current_index is the first item in sequence data[0]
+       // or current_index == 0 otherwise there's no current item. According
+       // to invariant #4 if there's no current item then current_index == used
 
        if(used > 0){current_index = 0;}
+       else{current_index = used;}
    }
 
    void sequence::advance()
@@ -115,10 +118,11 @@ namespace CS3358_FA2017
        // otherwise continue execution of sequence::advance().
        assert(is_item());
 
-       // If current item is not the last item in the sequence then
-       // current_index become current_index+1, otherwise we are at
-       // the last item in the sequence so do nothing.
-       current_index++;
+       // According to invariant #4 if there's no current item then
+       // current_index == used. Otherwise the current item is the item
+       // after current_index.
+       if(current_index == used -1){current_index = used;}
+       else{current_index = current_index+1;}
    }
 
    void sequence::insert(const value_type& entry)
@@ -128,35 +132,63 @@ namespace CS3358_FA2017
        // satisfy the resize rule.
        if(used == capacity){resize(size_type (1.25 * capacity)+1);}
 
-       if(is_item()) {
+       if(!is_item()) {
 
-           // There is a valid current_index, so starting from used work
-           // back towards current_index shifting items towards used by 1
-           // to accommodate inserting entry before current_index.
-           // (Middle Sequence Insert)
-
-           for (size_type index = used; index > current_index; --index)
-               data[index] = data[index-1];
-           used++;
-           data[current_index] = entry;
-       }
-       else
-       {
-           // There is NOT a valid current_index, so starting from used
-           // work backwards towards beginning of sequence (current_index == 0)
-           // shifting items towards used by 1 to accommodate inserting entry
-           // at beginning of sequence. (Front Sequence Insert)
-           for (size_type index = used; index > 0; --index)
-               data[index] = data[index-1];
-           used++;
+           // There's NO current item. Insert entry at the beginning of the
+           // sequence or current_index == 0. Starting from used + 1 shift
+           // item's towards used to accommodate inserting entry at beginning
+           // of sequence.
            current_index = 0;
+           for(size_type index = used + 1; index > current_index; --index){
+               data[index] = data[index-1];
+           }
            data[current_index] = entry;
+           ++used;
+
+       } else {
+
+           // There IS a current item. Insert entry prior to the current item
+           // or current_index - 1. Starting from used + 1 shift item's towards
+           // used to accommodate inserting entry prior to current item.
+           for(size_type index = used + 1; index > current_index; --index){
+               data[index] = data[index-1];
+           }
+           data[current_index] = entry;
+           ++used;
        }
+
    }
 
    void sequence::attach(const value_type& entry)
    {
-      cout << "attach(const value_type& entry) not implemented yet" << endl;
+       // Check to see if we need to resize the dynamic array. If
+       // we do the multiple current capacity by 1.25 and add +1 to
+       // satisfy the resize rule.
+       if(used == capacity){resize(size_type (1.25 * capacity)+1);}
+
+       if(!is_item()){
+
+           // There's NO current item. Attach entry at the end of the sequence
+           // or current_index == used. Make entry the current item.
+           data[current_index] = entry;
+           used++;
+
+       } else {
+
+           // There IS a current item. Attach entry after the current item,
+           // make entry the new current entry. To do this shift all items
+           // after current_index to the right by 1.
+
+           // Move current_index up by 1 to accommodate attaching entry
+           // after original current_index.
+           current_index = current_index+1;
+
+           for (size_type index = used + 1; index > current_index; --index) {
+               data[index] = data[index-1];
+           }
+           data[current_index] = entry; // current_index + 1 = entry
+           ++used;
+       }
    }
 
    void sequence::remove_current()
@@ -165,13 +197,23 @@ namespace CS3358_FA2017
        // otherwise continue execution of sequence::remove_current().
        assert(is_item());
 
-       // If assert is true then there's an item to remove. Remove
-       // current item and shift items in the sequence left by one.
-       for (size_type index = current_index; index < used-1; ++index) {
-                data[index] = data[index+1];
+
+       // According to the pre/post condition's for remove_current() if the
+       // current item was the last item then there's no current item. According
+       // to invariant #4 if there's no current item then current_index == used.
+       //current_index == used-1
+
+       if(!is_item()){
+           current_index = used;
+       } else {
+
+           // Valid current item. Remove current and shift items to the left.
+           for (size_type index = current_index; index < used-1; ++index) {
+               data[index] = data[index + 1];
+           }
+           // Update used after removing item.
+           --used;
        }
-       // Update used after removing item.
-       --used;
    }
 
    sequence& sequence::operator=(const sequence& source)
@@ -208,6 +250,7 @@ namespace CS3358_FA2017
        // Size equates to the number of items in a sequence this number
        // is tracked by the private member variable used.
        return used;
+
    }
 
    bool sequence::is_item() const
@@ -215,8 +258,7 @@ namespace CS3358_FA2017
        // An item is invalid ONLY if a sequence is NOT empty used == 0
        // OR if the current index is NOT at the very last item in the
        // sequence or current_index == used.
-
-       return (current_index < used);
+       return (current_index != used);
    }
 
    sequence::value_type sequence::current() const
