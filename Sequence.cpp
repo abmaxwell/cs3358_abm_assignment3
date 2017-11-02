@@ -51,7 +51,7 @@ namespace CS3358_FA2017
    {
        // Check initial_capacity validity per pre-condition
        // requirements for function stub listed in Sequence.h
-       if(initial_capacity <= 0){capacity = 1;}
+       if(initial_capacity < 1){capacity = 1;}
 
        // Create new dynamic sequence array.
        data = new value_type[capacity];
@@ -82,8 +82,8 @@ namespace CS3358_FA2017
    {
        // Check validity of new_capacity to ensure it's inline
        // with class invariant.
-       if(new_capacity < 1) {capacity = 1;}
-       else if(new_capacity < used) {capacity = used;}
+       if(new_capacity < 1){new_capacity = 1;}
+       if(new_capacity < used) {capacity = used;}
        else {capacity = new_capacity;}
 
        // Create new dynamic array based on adjusted capacity.
@@ -108,8 +108,8 @@ namespace CS3358_FA2017
        // or current_index == 0 otherwise there's no current item. According
        // to invariant #4 if there's no current item then current_index == used
 
-       if(used > 0){current_index = 0;}
-       else{current_index = used;}
+       current_index = 0;
+
    }
 
    void sequence::advance()
@@ -121,8 +121,7 @@ namespace CS3358_FA2017
        // According to invariant #4 if there's no current item then
        // current_index == used. Otherwise the current item is the item
        // after current_index.
-       if(current_index == used -1){current_index = used;}
-       else{current_index = current_index+1;}
+       current_index = current_index+1;
    }
 
    void sequence::insert(const value_type& entry)
@@ -203,17 +202,14 @@ namespace CS3358_FA2017
        // to invariant #4 if there's no current item then current_index == used.
        //current_index == used-1
 
-       if(!is_item()){
-           current_index = used;
-       } else {
 
-           // Valid current item. Remove current and shift items to the left.
-           for (size_type index = current_index; index < used-1; ++index) {
-               data[index] = data[index + 1];
-           }
-           // Update used after removing item.
-           --used;
+       // Valid current item. Remove current and shift items to the left.
+       for (size_type index = current_index; index < used-1; ++index) {
+           data[index] = data[index + 1];
        }
+       // Update used after removing item.
+       --used;
+
    }
 
    sequence& sequence::operator=(const sequence& source)
